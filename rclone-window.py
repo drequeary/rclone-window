@@ -15,7 +15,10 @@ import tomli_w
 import shlex
 import subprocess
 import pathlib
+import time
 from pathlib import Path
+
+VERSION = "1.0"
 
 if getattr(sys, 'frozen', False):
     # CONST when running as compiled .exe
@@ -30,12 +33,14 @@ else:
     ENTRY_FILE = Path(sys.argv[0]).resolve()
     FILENAME = ENTRY_FILE.name
 
+
 CONFIG_FILENAME = "rclone-window.toml"
-VERSION = "1.0"
+DATA_FOLDER = Path.home().as_posix() + "/.rclone-window/"
+pathlib.Path(DATA_FOLDER).mkdir(parents=True, exist_ok=True)
 
 def create_config():
     """Create a default configuration file if it doesn't exist."""
-    if pathlib.Path(f"{ROOT_PATH}{CONFIG_FILENAME}").exists():
+    if pathlib.Path(f"{DATA_FOLDER}{CONFIG_FILENAME}").exists():
         return
 
     data = {
@@ -56,13 +61,13 @@ def create_config():
         }
     }
 
-    with open(f"{ROOT_PATH}{CONFIG_FILENAME}", "wb") as f:
+    with open(f"{DATA_FOLDER}{CONFIG_FILENAME}", "wb") as f:
         tomli_w.dump(data, f)
 
 create_config()
 
 def get_config():
-    with open(f"{ROOT_PATH}{CONFIG_FILENAME}", "rb") as f:
+    with open(f"{DATA_FOLDER}{CONFIG_FILENAME}", "rb") as f:
         return tomllib.load(f)
 
 config = get_config()
@@ -77,10 +82,6 @@ rc_user = config["rc"]["user"]
 rc_passwd = config["rc"]["pass"]
 
 webview_port = config["webview"]["port"]
-
-def url_decode(encoded_url: str) -> str:
-    """Decode a percent-encoded URL."""
-    return urllib.parse.unquote(encoded_url)
 
 def url_encode(url: str) -> str:
     """Encode a URL using percent-encoding."""
@@ -104,6 +105,7 @@ def launch_rclone_web():
 
 def main():
     rclone_process = launch_rclone_web()
+    time.sleep(0.5)  # Give the rclone process time to start
     address_encoded = url_encode(f"http://{address}:{rc_port}")
     url = f"http://{address}:{port}/login?pass={passwd}&url={address_encoded}&user={user}"
 
