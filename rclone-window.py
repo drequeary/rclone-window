@@ -34,7 +34,7 @@ else:
     FILENAME = ENTRY_FILE.name
 
 
-CONFIG_FILENAME = "rclone-window.toml"
+CONFIG_FILENAME = "config.toml"
 DATA_FOLDER = Path.home().as_posix() + "/.rclone-window/"
 pathlib.Path(DATA_FOLDER).mkdir(parents=True, exist_ok=True)
 

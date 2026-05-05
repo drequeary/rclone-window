@@ -17,7 +17,7 @@ Rclone Window simply redirects the web interface through a webview window for a 
 
 ## Config
 
-A toml config file is generated when running Rclone Window for the first time. It contains the following sections:
+When Rclone Window launches for the first time, it creates a config folder in the user's home folder called `.rclone-window`. And generates a Toml config file containing the following sections:
 
 webgui\
     - address - address gui command should host from. Default: 127.0.0.1\
@@ -33,6 +33,8 @@ rc\
 
 webview\
     - port - port Rclone Window should host from. Default: 1000
+
+Full config path example: `C:\Users\Mark\.rclone-window\config.toml`
 
 All options are required. However, unless you need to change the rc username, password or any of the ports, you won't need to touch the config file.
 
